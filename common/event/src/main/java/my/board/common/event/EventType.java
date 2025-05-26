@@ -1,6 +1,5 @@
 package my.board.common.event;
 
-import kuke.board.common.event.payload.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
