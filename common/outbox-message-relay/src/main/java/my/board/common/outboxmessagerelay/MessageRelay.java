@@ -50,8 +50,8 @@ public class MessageRelay {
     @Scheduled(
             fixedDelay = 10,
             initialDelay = 5,
-            timeUnit = TimeUnit.SECONDS,
-            scheduler = "messageRelayPublishPendingEventExecutor"
+            timeUnit = TimeUnit.SECONDS
+//            scheduler = "messageRelayPublishPendingEventExecutor"
     )
     public void publishPendingEvent() {
         AssignedShard assignedShard = messageRelayCoordinator.assignShards();
