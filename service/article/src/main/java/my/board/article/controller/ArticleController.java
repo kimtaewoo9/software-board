@@ -1,5 +1,6 @@
 package my.board.article.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import my.board.article.service.ArticleService;
@@ -58,5 +59,14 @@ public class ArticleController {
         @RequestParam("pageSize") Long pageSize
     ) {
         return articleService.readAll(boardId, page, pageSize);
+    }
+
+    @GetMapping("/v1/articles/infinite-scroll")
+    public List<ArticleResponse> findAllInfiniteScroll(
+        @RequestParam("boardId") Long boardId,
+        @RequestParam("pageSize") Long pageSize,
+        @RequestParam(value = "lastArticleId", required = false) Long lastArticleId
+    ) {
+        return articleService.readAllInfiniteScroll(boardId, pageSize, lastArticleId);
     }
 }
