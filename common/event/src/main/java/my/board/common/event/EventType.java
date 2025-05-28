@@ -23,8 +23,7 @@ public enum EventType {
     COMMENT_DELETED(CommentDeletedEventPayload.class, Topic.KUKE_BOARD_COMMENT),
     ARTICLE_LIKED(ArticleLikedEventPayload.class, Topic.KUKE_BOARD_LIKE),
     ARTICLE_UNLIKED(ArticleUnlikedEventPayload.class, Topic.KUKE_BOARD_LIKE),
-    ARTICLE_VIEWED(ArticleViewedEventPayload.class, Topic.KUKE_BOARD_VIEW)
-    ;
+    ARTICLE_VIEWED(ArticleViewedEventPayload.class, Topic.KUKE_BOARD_VIEW);
 
     private final Class<? extends EventPayload> payloadClass;
     private final String topic;
@@ -39,8 +38,9 @@ public enum EventType {
     }
 
     public static class Topic {
+
         public static final String KUKE_BOARD_ARTICLE = "kuke-board-article";
-        public static final String KUKE_BOARD_COMMENT = "kuke-board-comment";
+        public static final String KUKE_BOARD_COMMENT = "kuke-board-entity";
         public static final String KUKE_BOARD_LIKE = "kuke-board-like";
         public static final String KUKE_BOARD_VIEW = "kuke-board-view";
     }

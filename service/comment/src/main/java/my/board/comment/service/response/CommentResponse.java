@@ -2,7 +2,7 @@ package my.board.comment.service.response;
 
 import java.time.LocalDateTime;
 import lombok.Data;
-import my.board.comment.comment.Comment;
+import my.board.comment.entity.Comment;
 
 @Data
 public class CommentResponse {
@@ -24,7 +24,7 @@ public class CommentResponse {
         commentResponse.writerId = comment.getWriterId();
         commentResponse.deleted = comment.getDelete();
         commentResponse.createdAt = comment.getCreatedAt();
-        
+
         return commentResponse;
     }
 }
