@@ -4,7 +4,7 @@ import static java.util.function.Predicate.not;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import my.board.comment.comment.Comment;
+import my.board.comment.entity.Comment;
 import my.board.comment.repository.CommentRepository;
 import my.board.comment.service.request.CommentCreateRequest;
 import my.board.comment.service.response.CommentResponse;
@@ -51,7 +51,7 @@ public class CommentService {
 
     public CommentResponse read(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-            () -> new EntityNotFoundException("comment not found")
+            () -> new EntityNotFoundException("entity not found")
         );
 
         return CommentResponse.from(comment);

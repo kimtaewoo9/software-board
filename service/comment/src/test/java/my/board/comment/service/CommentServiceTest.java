@@ -6,7 +6,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
-import my.board.comment.comment.Comment;
+import my.board.comment.entity.Comment;
 import my.board.comment.repository.CommentRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +36,6 @@ class CommentServiceTest {
         Long commentId = 2L;
         Comment comment = createComment(articleId, commentId);
 
-        given(comment.isRoot()).willReturn(true);
         given(commentRepository.findById(commentId))
             .willReturn(Optional.of(comment));
         given(commentRepository.countBy(articleId, commentId, 2L))
@@ -46,7 +45,26 @@ class CommentServiceTest {
         commentService.delete(commentId);
 
         // then
-        verify(comment).delete(); // mock 객체인 comment 에서 delete 가 호출 되었는지 확인 ..
+        verify(comment).delete(); // mock 객체인 entity 에서 delete 가 호출 되었는지 확인 ..
+    }
+
+    @Test
+    @DisplayName("1. 하위 댓글을 가지고 있으면 .. 삭제가 되면 안된다.")
+    void deleteShouldMarkDeletedOnly() {
+        Long articleId = 1L;
+        Long commentId = 2L;
+        Comment comment = createComment(articleId, commentId); // parent 가 없는 entity
+
+        given(commentRepository.findById(commentId))
+            .willReturn(Optional.of(comment));
+        given(commentRepository.countBy(articleId, commentId, 2L))
+            .willReturn(2L); // 자식이 있다고 반환해야함 .
+
+        // when
+        commentService.delete(commentId);
+
+        // then
+        verify(commentRepository, never()).delete(comment);
     }
 
     @Test
@@ -77,7 +95,6 @@ class CommentServiceTest {
         // then
         verify(commentRepository).delete(comment);
         verify(commentRepository, never()).delete(parentComment); // parent는 삭제 되면 안됨./
-
     }
 
     @Test
@@ -87,19 +104,19 @@ class CommentServiceTest {
         Long commentId = 2L;
         Long parentCommentId = 1L;
 
-        // comment 의 mock 객체 만들고 .
+        // entity 의 mock 객체 만들고 .
         Comment comment = createComment(articleId, commentId, parentCommentId);
         given(comment.isRoot()).willReturn(false);
 
-        // parent comment 의 mock 객체 만들고 .
+        // parent entity 의 mock 객체 만들고 .
         Comment parentComment = createComment(articleId, parentCommentId);
         given(parentComment.isRoot()).willReturn(true);
-        given(parentComment.getDelete()).willReturn(true); // parent comment 는 삭제된 상태
+        given(parentComment.getDelete()).willReturn(true); // parent entity 는 삭제된 상태
 
         given(commentRepository.findById(commentId))
             .willReturn(Optional.of(comment));
         given(commentRepository.countBy(articleId, commentId, 2L))
-            .willReturn(1L); // comment 는 자식이 없음 . (depth=2니까 당연한거 ..)
+            .willReturn(1L); // entity 는 자식이 없음 . (depth=2니까 당연한거 ..)
 
         given(commentRepository.findById(parentCommentId))
             .willReturn(Optional.of(parentComment));
@@ -110,13 +127,13 @@ class CommentServiceTest {
         // when
         commentService.delete(commentId);
 
-        // then .. comment 와 parent 가 완전 삭제 처리 되어야함 .
+        // then .. entity 와 parent 가 완전 삭제 처리 되어야함 .
         verify(commentRepository).delete(comment);
         verify(commentRepository).delete(parentComment);
     }
 
     @Test
-    @DisplayName("4. 상위 댓글 하위 댓글 둘다 없는 댓글 그냥 삭제 ..")
+    @DisplayName("4. 부모도 자식도 아닌 댓글 그냥은 삭제 ..")
     void deleteNoParentNoChildrenComment() {
         // given
         Long articleId = 1L;
@@ -140,14 +157,13 @@ class CommentServiceTest {
 
     private Comment createComment(Long articleId, Long commentId) {
         Comment comment = mock(Comment.class);
-        given(comment.getArticleId()).willReturn(articleId); // getArticleId 호출시 articleId 반환
-        given(comment.getCommentId()).willReturn(commentId); // getCommentId 호출시 commentId 반환
+        given(comment.getArticleId()).willReturn(articleId);
+        given(comment.getCommentId()).willReturn(commentId);
         return comment;
     }
 
     private Comment createComment(Long articleId, Long commentId, Long parentCommentId) {
         Comment comment = createComment(articleId, commentId);
-        // getParentCommentId() 호출시 parentCommentId 반환 하도록 변경 ..
         given(comment.getParentCommentId()).willReturn(parentCommentId);
         return comment;
     }

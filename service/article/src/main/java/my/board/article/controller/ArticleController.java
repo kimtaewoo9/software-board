@@ -67,6 +67,7 @@ public class ArticleController {
         @RequestParam("pageSize") Long pageSize,
         @RequestParam(value = "lastArticleId", required = false) Long lastArticleId
     ) {
+        // lastArticleId를 클라이언트쪽에서 보내주네 ..
         return articleService.readAllInfiniteScroll(boardId, pageSize, lastArticleId);
     }
 }

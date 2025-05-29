@@ -1,4 +1,4 @@
-package my.board.comment.comment;
+package my.board.comment.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
