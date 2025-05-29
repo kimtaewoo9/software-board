@@ -16,35 +16,35 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment {
 
-    @Id
-    private Long commentId;
-    private String content;
-    private Long parentCommentId;
-    private Long articleId;
-    private Long writerId;
-    private Boolean delete;
-    private LocalDateTime createdAt;
+	@Id
+	private Long commentId;
+	private String content;
+	private Long parentCommentId;
+	private Long articleId; // shard key
+	private Long writerId;
+	private Boolean deleted;
+	private LocalDateTime createdAt;
 
-    public static Comment create(Long commentId, String content, Long parentCommentId,
-        Long articleId, Long writerId) {
+	public static Comment create(Long commentId, String content, Long parentCommentId,
+		Long articleId, Long writerId) {
 
-        Comment comment = new Comment();
-        comment.commentId = commentId;
-        comment.content = content;
-        comment.parentCommentId = parentCommentId;
-        comment.articleId = articleId;
-        comment.writerId = writerId;
-        comment.delete = false;
-        comment.createdAt = LocalDateTime.now();
+		Comment comment = new Comment();
+		comment.commentId = commentId;
+		comment.content = content;
+		comment.parentCommentId = parentCommentId == null ? commentId : parentCommentId;
+		comment.articleId = articleId;
+		comment.writerId = writerId;
+		comment.deleted = false;
+		comment.createdAt = LocalDateTime.now();
 
-        return comment;
-    }
+		return comment;
+	}
 
-    public Boolean isRoot() {
-        return parentCommentId.longValue() == commentId;
-    }
+	public Boolean isRoot() {
+		return parentCommentId.longValue() == commentId;
+	}
 
-    public void delete() {
-        delete = true;
-    }
+	public void delete() {
+		deleted = true;
+	}
 }
