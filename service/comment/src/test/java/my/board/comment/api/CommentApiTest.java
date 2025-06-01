@@ -123,6 +123,47 @@ public class CommentApiTest {
 		}
 	}
 
+	@Test
+	void countTest() {
+		CommentCreateRequest request1 = new CommentCreateRequest("content", null, 2L, 1L);
+		CommentCreateRequest request2 = new CommentCreateRequest("content", null, 2L, 1L);
+
+		CommentResponse response1 = restClient.post()
+			.uri("/v1/comments")
+			.body(request1)
+			.retrieve()
+			.body(CommentResponse.class);
+
+		CommentResponse response2 = restClient.post()
+			.uri("/v1/comments")
+			.body(request2)
+			.retrieve()
+			.body(CommentResponse.class);
+
+		System.out.println(response1);
+		System.out.println(response2);
+
+		Long count = restClient.get()
+			.uri("v1/comments/articles/{articleId}/count", 2L)
+			.retrieve()
+			.body(Long.class);
+		System.out.println("count: " + count);
+
+		restClient.delete()
+			.uri("/v1/comments/{commentId}", response1.getCommentId())
+			.retrieve();
+
+		restClient.delete()
+			.uri("/v1/comments/{commentId}", response2.getCommentId())
+			.retrieve();
+
+		Long countAfterDelete = restClient.get()
+			.uri("/v1/comments/articles/{articleId}/count", response1.getArticleId())
+			.retrieve()
+			.body(Long.class);
+
+		System.out.println("count after delete: " + countAfterDelete);
+	}
 
 	@Data
 	@AllArgsConstructor

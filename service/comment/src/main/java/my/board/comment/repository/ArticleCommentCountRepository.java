@@ -15,12 +15,16 @@ public interface ArticleCommentCountRepository extends JpaRepository<ArticleComm
 		nativeQuery = true
 	)
 	@Modifying
-	int increase(@Param("articleId") Long articleId);
+	int increase(
+		@Param("articleId") Long articleId
+	);
 
 	@Query(
 		value = "update article_comment_count set comment_count = comment_count - 1 where article_id = :articleId",
 		nativeQuery = true
 	)
 	@Modifying
-	int decrease(@Param("articleId") Long articleId);
+	int decrease(
+		@Param("articleId") Long articleId
+	);
 }

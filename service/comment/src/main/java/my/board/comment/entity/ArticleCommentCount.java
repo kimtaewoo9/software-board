@@ -16,7 +16,7 @@ import lombok.ToString;
 public class ArticleCommentCount {
 
 	@Id
-	private Long articleId; // articleId가 primary key
+	private Long articleId;
 	private Long commentCount;
 
 	public static ArticleCommentCount init(Long articleId, Long commentCount) {
