@@ -53,4 +53,11 @@ public class CommentController {
 	) {
 		return commentService.readAll(articleId, lastParentCommentId, lastCommentId, pageSize);
 	}
+
+	@GetMapping("/v1/comments/articles/{articleId}/count")
+	public Long count(
+		@PathVariable("articleId") Long articleId
+	) {
+		return commentService.count(articleId);
+	}
 }

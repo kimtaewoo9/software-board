@@ -6,6 +6,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import my.board.comment.entity.ArticleCommentCount;
 import my.board.comment.entity.Comment;
 import my.board.comment.repository.ArticleCommentCountRepository;
 import my.board.comment.repository.CommentRepository;
@@ -25,7 +26,6 @@ public class CommentService {
 	private final Snowflake snowflake = new Snowflake();
 	private final ArticleCommentCountRepository articleCommentCountRepository;
 
-
 	@Transactional
 	public CommentResponse create(CommentCreateRequest commentCreateRequest) {
 		log.info("✅ commentCreateRequest: {}", commentCreateRequest);
@@ -39,6 +39,15 @@ public class CommentService {
 		);
 
 		Comment savedComment = commentRepository.save(newComment);
+
+		// save 후 article comment count 를 증가 시켜야함 sql 문으로 바로 업데이트
+		int result = articleCommentCountRepository.increase(commentCreateRequest.getArticleId());
+		if (result == 0) {
+			// 없으면 만들어서 저장하기
+			articleCommentCountRepository.save(
+				ArticleCommentCount.init(commentCreateRequest.getArticleId(), 1L)
+			);
+		}
 
 		return CommentResponse.from(savedComment);
 	}
@@ -104,8 +113,10 @@ public class CommentService {
 			.toList();
 	}
 
+	// 진짜 삭제 하는 코드 이떄는 decrease 해야함 .
 	private void delete(Comment comment) {
 		commentRepository.delete(comment);
+		articleCommentCountRepository.decrease(comment.getArticleId());
 		// 만약에 '삭제된 상위 댓글'이 있다면 그것도 삭제해야함 . -> 즉 자식 먼저 삭제하고 상위 댓글을 확인함 .
 		// 상위 댓글 찾고, 삭제가 되어 있는지 찾고, 삭제 되어 있으면 자식이 있는지 확인하고 .. ifPresent 완전 삭제
 		if (!comment.isRoot()) {
@@ -114,10 +125,18 @@ public class CommentService {
 				.filter(not(this::hasChildren)) // 다른 자식이 있는지 확인 . 자식이 없어야 삭제 가능 .
 				.ifPresent(this::delete); // 댓글이 삭제 되어 있고, 자식이 없다면 delete (완전 삭제)
 		}
+
+
 	}
 
 	private boolean hasChildren(Comment comment) {
 		return commentRepository.countBy(comment.getArticleId(), comment.getCommentId(), 2L) == 2;
 	}
 
+	@Transactional(readOnly = true)
+	public Long count(Long articleId) {
+		return articleCommentCountRepository.findById(articleId)
+			.map(ArticleCommentCount::getCommentCount)
+			.orElse(0L);
+	}
 }
