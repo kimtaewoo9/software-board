@@ -7,6 +7,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import my.board.comment.entity.Comment;
+import my.board.comment.repository.ArticleCommentCountRepository;
 import my.board.comment.repository.CommentRepository;
 import my.board.comment.service.request.CommentCreateRequest;
 import my.board.comment.service.response.CommentPageResponse;
@@ -22,6 +23,7 @@ public class CommentService {
 
 	private final CommentRepository commentRepository;
 	private final Snowflake snowflake = new Snowflake();
+	private final ArticleCommentCountRepository articleCommentCountRepository;
 
 
 	@Transactional

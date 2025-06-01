@@ -4,7 +4,9 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import my.board.article.entity.Article;
+import my.board.article.entity.BoardArticleCount;
 import my.board.article.repository.ArticleRepository;
+import my.board.article.repository.BoardArticleCountRepository;
 import my.board.article.service.request.ArticleCreateRequest;
 import my.board.article.service.request.ArticleUpdateRequest;
 import my.board.article.service.response.ArticlePageResponse;
@@ -19,6 +21,7 @@ public class ArticleService {
 
 	private final Snowflake snowflake = new Snowflake();
 	private final ArticleRepository articleRepository;
+	private final BoardArticleCountRepository boardArticleCountRepository;
 
 	@Transactional
 	public ArticleResponse create(ArticleCreateRequest articleCreateRequest) {
@@ -30,6 +33,14 @@ public class ArticleService {
 			articleCreateRequest.getWriterId()
 		);
 		Article savedArticle = articleRepository.save(newArticle);
+
+		Long boardId = articleCreateRequest.getBoardId();
+		int result = boardArticleCountRepository.increase(boardId);
+		if (result == 0) {
+			boardArticleCountRepository.save(
+				BoardArticleCount.init(boardId, 1L)
+			);
+		}
 
 		return ArticleResponse.from(savedArticle);
 	}
@@ -57,7 +68,14 @@ public class ArticleService {
 
 	@Transactional
 	public void delete(Long articleId) {
-		articleRepository.deleteById(articleId);
+		Article article = articleRepository.findById(articleId).orElseThrow(
+			() -> new EntityNotFoundException("article not found")
+		);
+		articleRepository.delete(article);
+
+		// 좋아요는 .. 좋아요 객체를 삭제해야함 .
+		// 근데 조회수는 그냥 조회수 삭제해주면 됨 .
+		boardArticleCountRepository.decrease(article.getBoardId());
 	}
 
 	public ArticlePageResponse readAll(Long boardId, Long page, Long pageSize) {
@@ -87,5 +105,10 @@ public class ArticleService {
 			.toList();
 	}
 
-	
+	// 조회수 가져오기 .
+	public Long count(Long boardId) {
+		return boardArticleCountRepository.findById(boardId)
+			.map(BoardArticleCount::getArticleCount)
+			.orElse(0L); // board article count 객체가 없으면 게시글 수 0
+	}
 }

@@ -12,8 +12,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArticleLikeCountRepository extends JpaRepository<ArticleLikeCount, Long> {
-	
+
 	// select  ... for update 구문 이렇게하면 조회와 동시에 비관적 락이 잡힘 .
+	// 좀 더 객체지향적으로 코딩이 가능 (엔티티를 찾아서 수정)
 	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	Optional<ArticleLikeCount> findLockedByArticleId(Long articleId);
 
