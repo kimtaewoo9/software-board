@@ -82,6 +82,8 @@ public class CommentService {
 				} else {
 					delete(comment); // 자식 댓글 없으면 그냥 삭제 처리 .
 				}
+				// 논리적 삭제, 물리적 삭제 둘다 댓글 수 자체는 줄여줘야함 .
+				articleCommentCountRepository.decrease(comment.getArticleId());
 			});
 	}
 
@@ -116,7 +118,6 @@ public class CommentService {
 	// 진짜 삭제 하는 코드 이떄는 decrease 해야함 .
 	private void delete(Comment comment) {
 		commentRepository.delete(comment);
-		articleCommentCountRepository.decrease(comment.getArticleId());
 		// 만약에 '삭제된 상위 댓글'이 있다면 그것도 삭제해야함 . -> 즉 자식 먼저 삭제하고 상위 댓글을 확인함 .
 		// 상위 댓글 찾고, 삭제가 되어 있는지 찾고, 삭제 되어 있으면 자식이 있는지 확인하고 .. ifPresent 완전 삭제
 		if (!comment.isRoot()) {
