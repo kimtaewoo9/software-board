@@ -11,33 +11,40 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DataSerializer {
-    private static final ObjectMapper objectMapper = initialize();
 
-    private static ObjectMapper initialize() {
-        return new ObjectMapper()
-                .registerModule(new JavaTimeModule())
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
+	private static final ObjectMapper objectMapper = initialize();
 
-    public static <T> T deserialize(String data, Class<T> clazz) {
-        try {
-            return objectMapper.readValue(data, clazz);
-        } catch (JsonProcessingException e) {
-            log.error("[DataSerializer.deserialize] data={}, clazz={}", data, clazz, e);
-            return null;
-        }
-    }
+	// 카프카는 .. 오직 byte array 만 저장할 수 있기 때문에 직렬화 해서 저장함 .
+	// 이 data serializer 를 활용해서 kafka producer 와 consumer 에서 통신할 수 있음.
+	private static ObjectMapper initialize() {
+		return new ObjectMapper()
+			.registerModule(new JavaTimeModule()) // 자바 8의 날짜/시간 타입을 지원하기 위한 설정 .
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		// 역직렬화 시 필드가 없어도 에러가 나지 않도록 설정해줌 .
+	}
 
-    public static <T> T deserialize(Object data, Class<T> clazz) {
-        return objectMapper.convertValue(data, clazz);
-    }
+	// String 을 자바 객체로 변환 (역직렬화)
+	public static <T> T deserialize(String data, Class<T> clazz) {
+		try {
+			return objectMapper.readValue(data, clazz);
+		} catch (JsonProcessingException e) {
+			log.error("[DataSerializer.deserialize] data={}, clazz={}", data, clazz, e);
+			return null;
+		}
+	}
 
-    public static String serialize(Object object) {
-        try {
-            return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            log.error("[DataSerializer.serialize] object={}", object, e);
-            return null;
-        }
-    }
+	// object 를 자바 객체로 역직렬화 .
+	public static <T> T deserialize(Object data, Class<T> clazz) {
+		return objectMapper.convertValue(data, clazz);
+	}
+
+	// 자바 객체를 string 으로 변환 ..
+	public static String serialize(Object object) {
+		try {
+			return objectMapper.writeValueAsString(object);
+		} catch (JsonProcessingException e) {
+			log.error("[DataSerializer.serialize] object={}", object, e);
+			return null;
+		}
+	}
 }
