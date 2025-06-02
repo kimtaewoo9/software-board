@@ -1,1 +1,20 @@
 server.port: 9004
+
+spring:
+  application:
+    name: software-board-hot-article-service
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092 # broker server 의 주소 .
+    consumer:
+      group-id: software-board-hot-article-service # 인기글 설정을 위한 컨슈머 그룹
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: false
+endpoints: # 인기글 서비스는 게시글 서비스의 정보가 필요하기 떄문에 .. url 정보를 넣어줌 .
+  software-board-article-service:
+    url: http://localhost:9000

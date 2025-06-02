@@ -15,6 +15,7 @@ public final class DataSerializer {
 	private static final ObjectMapper objectMapper = initialize();
 
 	// 카프카는 .. 오직 byte array 만 저장할 수 있기 때문에 직렬화 해서 저장함 .
+	// 이 data serializer 를 활용해서 kafka producer 와 consumer 에서 통신할 수 있음.
 	private static ObjectMapper initialize() {
 		return new ObjectMapper()
 			.registerModule(new JavaTimeModule()) // 자바 8의 날짜/시간 타입을 지원하기 위한 설정 .
@@ -40,7 +41,7 @@ public final class DataSerializer {
 	// 자바 객체를 string 으로 변환 ..
 	public static String serialize(Object object) {
 		try {
-			return objectMapper.writeValueAsString(object); // jackson 라이브러리의 objectMapper를 사용하여 직렬화
+			return objectMapper.writeValueAsString(object);
 		} catch (JsonProcessingException e) {
 			log.error("[DataSerializer.serialize] object={}", object, e);
 			return null;
