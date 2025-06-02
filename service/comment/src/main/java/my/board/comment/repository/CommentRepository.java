@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-	// covering index 를 활용하기 위해서 sub query를 넣어줌 .
 	@Query(
 		value = "select count(*) from (" +
 			"   select comment_id from comment " +

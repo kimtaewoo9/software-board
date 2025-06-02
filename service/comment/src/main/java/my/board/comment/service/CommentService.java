@@ -126,10 +126,9 @@ public class CommentService {
 				.filter(not(this::hasChildren)) // 다른 자식이 있는지 확인 . 자식이 없어야 삭제 가능 .
 				.ifPresent(this::delete); // 댓글이 삭제 되어 있고, 자식이 없다면 delete (완전 삭제)
 		}
-
-
 	}
 
+	// 일단 상위 댓글이 삭제되었다는 가정 하에 .. 이 메서드가 실행되고 자신(comment) 말고 다른 자식이 있으면 삭제 x
 	private boolean hasChildren(Comment comment) {
 		return commentRepository.countBy(comment.getArticleId(), comment.getCommentId(), 2L) == 2;
 	}
