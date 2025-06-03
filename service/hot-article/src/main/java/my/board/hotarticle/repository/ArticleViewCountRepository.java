@@ -13,14 +13,10 @@ public class ArticleViewCountRepository {
 
 	private static final String KEY_FORMAT = "hot-article::article::{articleId}::view-count";
 
-	public void create(Long articleId, Long viewCount, Duration ttl) {
+	public void createOrUpdate(Long articleId, Long viewCount, Duration ttl) {
 		redisTemplate.opsForValue().set(generateKey(articleId), String.valueOf(viewCount), ttl);
 	}
-
-	public void update(Long articleId, Long viewCount, Duration ttl) {
-		redisTemplate.opsForValue().set(generateKey(articleId), String.valueOf(viewCount), ttl);
-	}
-
+	
 	public Long read(Long articleId) {
 		String result = redisTemplate.opsForValue().get(generateKey(articleId));
 		return result == null ? 0L : Long.parseLong(result);

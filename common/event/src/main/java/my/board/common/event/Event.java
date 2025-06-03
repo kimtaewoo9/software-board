@@ -24,9 +24,8 @@ public class Event<T extends EventPayload> {
 		return DataSerializer.serialize(this);
 	}
 
-	// 받아온 json 을 자바 객체로 역직렬화 .
+	// 카프카 토픽에서 받아온 json 형태의 event 를 객체로 만들어줌 .
 	public static Event<EventPayload> fromJson(String json) {
-		// json 을 eventRaw 로 역직렬화 .
 		EventRaw eventRaw = DataSerializer.deserialize(json, EventRaw.class);
 		if (eventRaw == null) {
 			return null;

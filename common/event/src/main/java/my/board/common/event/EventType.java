@@ -43,7 +43,6 @@ public enum EventType {
 
 	public static class Topic {
 
-		// 같은 게시글에 대한 이벤트가 같은 파티션에 저장되기 때문에 순서가 보장됨 .
 		public static final String SOFTWARE_BOARD_ARTICLE = "software-board-article";
 		public static final String SOFTWARE_BOARD_COMMENT = "software-board-comment";
 		public static final String SOFTWARE_BOARD_LIKE = "software-board-like";
