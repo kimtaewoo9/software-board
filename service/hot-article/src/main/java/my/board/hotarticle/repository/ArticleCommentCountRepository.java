@@ -13,12 +13,8 @@ public class ArticleCommentCountRepository {
 
 	private static final String KEY_FORMAT = "hot-article::article::%s::comment-count";
 
-	public void create(Long articleId, Long commentCount, Duration ttl) {
+	public void createOrUpdate(Long articleId, Long commentCount, Duration ttl) {
 		// key + commentCount(String) + ttl
-		redisTemplate.opsForValue().set(generateKey(articleId), String.valueOf(commentCount), ttl);
-	}
-
-	public void update(Long articleId, Long commentCount, Duration ttl) {
 		redisTemplate.opsForValue().set(generateKey(articleId), String.valueOf(commentCount), ttl);
 	}
 

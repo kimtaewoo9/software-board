@@ -14,16 +14,11 @@ public class ArticleLikeCountRepository {
 	// hot-article::article::{article_id}::like-count
 	private static final String KEY_FORMAT = "hot-article::article::%s::like-count";
 
-	public void create(Long articleId, Long articleLikeCount, Duration ttl) {
+	public void createOrUpdate(Long articleId, Long articleLikeCount, Duration ttl) {
 		redisTemplate.opsForValue()
 			.set(generateKey(articleId), String.valueOf(articleLikeCount), ttl);
 	}
-
-	public void update(Long articleId, Long articleLikeCount, Duration ttl) {
-		redisTemplate.opsForValue()
-			.set(generateKey(articleId), String.valueOf(articleLikeCount), ttl);
-	}
-
+	
 	public Long read(Long articleId) {
 		String result = redisTemplate.opsForValue().get(generateKey(articleId));
 		return result == null ? 0L : Long.parseLong(result);
