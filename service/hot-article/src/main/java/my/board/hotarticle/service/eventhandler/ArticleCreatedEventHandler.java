@@ -17,7 +17,7 @@ public class ArticleCreatedEventHandler implements EventHandler<ArticleCreateEve
 	@Override
 	public void handle(Event<ArticleCreateEventPayload> event) {
 		ArticleCreateEventPayload payload = event.getPayload();
-		articleCreatedTimeRepository.create(
+		articleCreatedTimeRepository.createOrUpdate(
 			payload.getArticleId(),
 			payload.getCreatedAt(),
 			TimeCalculatorUtils.calculateDurationToMidnight() // 현재 시간으로부터 자정까지 남은 시간을 저장함 .
