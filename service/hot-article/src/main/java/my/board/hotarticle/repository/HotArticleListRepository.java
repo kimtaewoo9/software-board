@@ -37,6 +37,12 @@ public class HotArticleListRepository {
 		});
 	}
 
+	public void remove(Long articleId, LocalDateTime time) {
+		// 매개변수가 두개 필요한 이유, redis 안에 여러개의 sorted set 이 서로 다른 이름으로 저장되어 있음 .
+		// sorted set 을 찾기 위한 키 + 어떤 멤버를 삭제할 지 .. (해당 날짜의 sorted set 으로 가서 해당 멤버를 삭제함 .)
+		redisTemplate.opsForZSet().remove(generateKey(time), String.valueOf(articleId));
+	}
+
 	private String generateKey(LocalDateTime time) {
 		// LocalDateTime 을 yyyyMMdd 형식의 String 으로 바꿈 .
 		return generateKey(TIME_FORMATTER.format(time));
