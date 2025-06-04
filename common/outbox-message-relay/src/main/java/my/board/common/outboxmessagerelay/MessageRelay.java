@@ -33,17 +33,21 @@ public class MessageRelay {
 	@Async("messageRelayPublishEventExecutor")
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	// event 발생 알림을 받아서 .event 를 kafka 에게 전송한다.
+	// outbox 에서 10초 마다 가져오기도 하지만 .. 직접 전송을 함.
 	public void publishEvent(OutboxEvent outboxEvent) {
 		publishEvent(outboxEvent.getOutbox());
 	}
 
 	private void publishEvent(Outbox outbox) {
 		try {
+			// 1. 카프카로 메시지 전송 . 최대 1초대기
 			messageRelayKafkaTemplate.send(
 				outbox.getEventType().getTopic(),
 				String.valueOf(outbox.getShardKey()),
 				outbox.getPayload()
 			).get(1, TimeUnit.SECONDS);
+
+			// 2. 전송 성공시 Outbox 에서 해당 이벤트 삭제 ..
 			outboxRepository.delete(outbox);
 		} catch (Exception e) {
 			log.error("[MessageRelay.publishEvent] outbox={}", outbox, e);

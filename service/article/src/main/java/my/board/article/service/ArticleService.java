@@ -14,6 +14,7 @@ import my.board.article.service.response.ArticleResponse;
 import my.board.common.event.EventType;
 import my.board.common.event.payload.ArticleCreatedEventPayload;
 import my.board.common.event.payload.ArticleDeletedEventPayload;
+import my.board.common.event.payload.ArticleUpdatedEventPayload;
 import my.board.common.outboxmessagerelay.OutboxEventPublisher;
 import my.board.common.snowflake.Snowflake;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,7 @@ public class ArticleService {
 		outboxEventPublisher.publish(
 			EventType.ARTICLE_CREATED,
 			articleCreateEventPayload,
-			savedArticle.getBoardId()
+			savedArticle.getBoardId() // 단일 트랜잭션에서 .. 동일한 샤드로 처리 되어야하므로 .. 샤드키 전달
 		);
 
 		return ArticleResponse.from(savedArticle);
@@ -79,6 +80,25 @@ public class ArticleService {
 		String title = articleUpdateRequest.getTitle();
 		String content = articleUpdateRequest.getContent();
 		article.update(title, content);
+
+		ArticleUpdatedEventPayload articleUpdatedEventPayload =
+			ArticleUpdatedEventPayload.builder()
+				.articleId(article.getArticleId())
+				.title(article.getTitle())
+				.content(article.getContent())
+				.boardId(article.getBoardId())
+				.writerId(article.getWriterId())
+				.createdAt(article.getCreatedAt())
+				.updatedAt(article.getUpdatedAt())
+				.build();
+
+		// @TransactionalEventListener 애노테이션이 있는 메서드들에게 이벤트를 전송
+		// 이벤트 발생을 알린다 .
+		outboxEventPublisher.publish(
+			EventType.ARTICLE_UPDATED,
+			articleUpdatedEventPayload,
+			article.getBoardId() // 단일 트랜잭션에서 .. 동일한 샤드로 처리 되어야하므로 .. 샤드키 전달
+		);
 
 		return ArticleResponse.from(article);
 	}

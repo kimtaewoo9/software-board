@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class ArticleViewCountRepository {
 
+	// 조회수 같은거는 .. 크게 중요하지 않으니까 redis 에 저장함. 자주 읽음 + 데이터가 크게 중요하지 않음.
+	// redis에 저장하고 backup repository 를 따로 만든다
 	private final StringRedisTemplate redisTemplate;
 
 	// view::article::{article_id}:view_count
