@@ -25,7 +25,7 @@ public class ArticleApiTest {
 
 	@Test
 	void readTest() {
-		ArticleResponse articleResponse = read(185618548293066752L);
+		ArticleResponse articleResponse = read(188609192527093760L);
 		System.out.println("articleResponse = " + articleResponse);
 
 	}
@@ -34,14 +34,14 @@ public class ArticleApiTest {
 	void updateTest() {
 		ArticleUpdateRequest articleUpdateRequest
 			= new ArticleUpdateRequest("newTitle", "newContent");
-		ArticleResponse articleResponse = update(185618548293066752L, articleUpdateRequest);
+		ArticleResponse articleResponse = update(188609192527093760L, articleUpdateRequest);
 
 		System.out.println("articleResponse = " + articleResponse);
 	}
 
 	@Test
 	void deleteTest() {
-		delete(185618548293066752L);
+		delete(188610253912498176L);
 	}
 
 	ArticleResponse create(ArticleCreateRequest articleCreateRequest) {

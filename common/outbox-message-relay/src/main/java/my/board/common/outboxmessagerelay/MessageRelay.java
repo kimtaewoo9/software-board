@@ -26,7 +26,7 @@ public class MessageRelay {
 	// publisher 에게 받은 이벤트를 .. outbox 로 만든다 .
 	// 이벤트 발생 알림을 받아서 outbox 를 만든다 .
 	public void createOutbox(OutboxEvent outboxEvent) {
-		log.info("[MessageRelay.createOutbox] outboxEvent={}", outboxEvent);
+		log.info("✅ [MessageRelay.createOutbox] outboxEvent={}", outboxEvent);
 		outboxRepository.save(outboxEvent.getOutbox());
 	}
 
@@ -55,7 +55,7 @@ public class MessageRelay {
 	}
 
 	@Scheduled(
-		fixedDelay = 10, // 10초 마다 outbox 의 이벤트를 처리
+		fixedDelay = 60, // TODO test 후 10초 마다로 변경
 		initialDelay = 5,
 		timeUnit = TimeUnit.SECONDS,
 		scheduler = "messageRelayPublishPendingEventExecutor"
