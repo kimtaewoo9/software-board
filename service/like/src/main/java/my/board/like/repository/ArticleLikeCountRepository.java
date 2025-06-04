@@ -23,7 +23,7 @@ public interface ArticleLikeCountRepository extends JpaRepository<ArticleLikeCou
 		nativeQuery = true
 	)
 	@Modifying
-		// update 쿼리임을 hibernate 에게 알려줌.
+		// 쿼리가 수행될때 배타적 락이 걸림.
 	int increase(@Param("articleId") Long articleId);
 
 	@Query(

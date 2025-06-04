@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ArticleUnlikeEventHandler implements EventHandler<ArticleUnlikedEventPayload> {
+public class ArticleUnlikedEventHandler implements EventHandler<ArticleUnlikedEventPayload> {
 
 	private final ArticleLikeCountRepository articleLikeCountRepository;
 

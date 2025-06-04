@@ -1,6 +1,7 @@
 package my.board.common.outboxmessagerelay;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import my.board.common.event.Event;
 import my.board.common.event.EventPayload;
 import my.board.common.event.EventType;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OutboxEventPublisher {
 
 	private final Snowflake outboxIdSnowflake = new Snowflake();
@@ -19,6 +21,7 @@ public class OutboxEventPublisher {
 	// article, comment, view, like 등 이벤트가 발생했을때 호출되는 메서드 .
 	public void publish(EventType type, EventPayload payload, Long shardKey) {
 		// 이벤트 객체 생성 .
+		log.info("✅ [OutboxEventPublisher.publish] EventTYPE: {}", type);
 		String newEvent = Event.of(
 			eventIdSnowflake.nextId(),
 			type,

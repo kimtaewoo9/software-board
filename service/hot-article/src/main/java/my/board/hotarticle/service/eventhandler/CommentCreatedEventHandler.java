@@ -3,20 +3,20 @@ package my.board.hotarticle.service.eventhandler;
 import lombok.RequiredArgsConstructor;
 import my.board.common.event.Event;
 import my.board.common.event.EventType;
-import my.board.common.event.payload.CommentDeleteEventPayload;
+import my.board.common.event.payload.CommentCreatedEventPayload;
 import my.board.hotarticle.repository.ArticleCommentCountRepository;
 import my.board.hotarticle.util.TimeCalculatorUtils;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class CommentDeleteEventHandler implements EventHandler<CommentDeleteEventPayload> {
+public class CommentCreatedEventHandler implements EventHandler<CommentCreatedEventPayload> {
 
 	private final ArticleCommentCountRepository articleCommentCountRepository;
 
 	@Override
-	public void handle(Event<CommentDeleteEventPayload> event) {
-		CommentDeleteEventPayload payload = event.getPayload();
+	public void handle(Event<CommentCreatedEventPayload> event) {
+		CommentCreatedEventPayload payload = event.getPayload();
 		articleCommentCountRepository.createOrUpdate(
 			payload.getArticleId(),
 			payload.getArticleCommentCount(),
@@ -25,12 +25,12 @@ public class CommentDeleteEventHandler implements EventHandler<CommentDeleteEven
 	}
 
 	@Override
-	public boolean supports(Event<CommentDeleteEventPayload> event) {
-		return event.getType() == EventType.COMMENT_DELETED;
+	public boolean supports(Event<CommentCreatedEventPayload> event) {
+		return event.getType() == EventType.COMMENT_CREATED;
 	}
 
 	@Override
-	public Long findArticleId(Event<CommentDeleteEventPayload> event) {
+	public Long findArticleId(Event<CommentCreatedEventPayload> event) {
 		return event.getPayload().getArticleId();
 	}
 }
