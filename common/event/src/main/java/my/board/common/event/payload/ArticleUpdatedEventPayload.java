@@ -11,11 +11,13 @@ import my.board.common.event.EventPayload;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleUnlikeEventPayload implements EventPayload {
+public class ArticleUpdatedEventPayload implements EventPayload {
 
-	private Long articleLikeId;
 	private Long articleId;
-	private Long userId;
+	private String title;
+	private String content;
+	private Long boardId;
+	private Long writerId;
 	private LocalDateTime createdAt;
-	private Long articleLikeCount;
+	private LocalDateTime updatedAt;
 }

@@ -51,6 +51,6 @@ public class MessageRelayConfig {
 	// 메인 스레드 블로킹 없이 백그라운드에서 지속적으로 DB를 모니터링 할 수 있게됨 .
 	@Bean
 	public Executor messageRelayPublishPendingEventExecutor() {
-		return Executors.newSingleThreadExecutor();
+		return Executors.newSingleThreadScheduledExecutor();
 	}
 }

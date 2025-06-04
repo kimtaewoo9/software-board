@@ -11,14 +11,14 @@ import my.board.common.event.EventPayload;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleCreateEventPayload implements EventPayload {
+public class CommentDeletedEventPayload implements EventPayload {
 
-	private Long articleId;
-	private String title;
+	private Long commentId;
 	private String content;
-	private Long boardId;
+	private String parentCommentId; // v1 버전 ..
+	private Long articleId;
 	private Long writerId;
+	private Boolean deleted;
 	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
-	private Long boardArticleCount; // 게시판의 게시글 총 개수 .
+	private Long articleCommentCount;
 }

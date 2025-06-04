@@ -11,6 +11,10 @@ import my.board.article.service.request.ArticleCreateRequest;
 import my.board.article.service.request.ArticleUpdateRequest;
 import my.board.article.service.response.ArticlePageResponse;
 import my.board.article.service.response.ArticleResponse;
+import my.board.common.event.EventType;
+import my.board.common.event.payload.ArticleCreatedEventPayload;
+import my.board.common.event.payload.ArticleDeletedEventPayload;
+import my.board.common.outboxmessagerelay.OutboxEventPublisher;
 import my.board.common.snowflake.Snowflake;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +26,7 @@ public class ArticleService {
 	private final Snowflake snowflake = new Snowflake();
 	private final ArticleRepository articleRepository;
 	private final BoardArticleCountRepository boardArticleCountRepository;
+	private final OutboxEventPublisher outboxEventPublisher;
 
 	@Transactional
 	public ArticleResponse create(ArticleCreateRequest articleCreateRequest) {
@@ -41,6 +46,26 @@ public class ArticleService {
 				BoardArticleCount.init(boardId, 1L)
 			);
 		}
+
+		ArticleCreatedEventPayload articleCreateEventPayload =
+			ArticleCreatedEventPayload.builder()
+				.articleId(savedArticle.getArticleId())
+				.title(savedArticle.getTitle())
+				.content(savedArticle.getContent())
+				.boardId(savedArticle.getBoardId())
+				.writerId(savedArticle.getWriterId())
+				.createdAt(savedArticle.getCreatedAt())
+				.updatedAt(savedArticle.getUpdatedAt())
+				.boardArticleCount(count(savedArticle.getBoardId()))
+				.build();
+
+		// @TransactionalEventListener 애노테이션이 있는 메서드들에게 이벤트를 전송
+		// 이벤트 발생을 알린다 .
+		outboxEventPublisher.publish(
+			EventType.ARTICLE_CREATED,
+			articleCreateEventPayload,
+			savedArticle.getBoardId()
+		);
 
 		return ArticleResponse.from(savedArticle);
 	}
@@ -76,6 +101,24 @@ public class ArticleService {
 		// 좋아요는 .. 좋아요 객체를 삭제해야함 .
 		// 근데 조회수는 그냥 조회수 삭제해주면 됨 .
 		boardArticleCountRepository.decrease(article.getBoardId());
+
+		ArticleDeletedEventPayload articleDeletedEventPayload
+			= ArticleDeletedEventPayload.builder()
+			.articleId(article.getArticleId())
+			.title(article.getTitle())
+			.content(article.getContent())
+			.boardId(article.getBoardId())
+			.writerId(article.getWriterId())
+			.createdAt(article.getCreatedAt())
+			.updatedAt(article.getUpdatedAt())
+			.boardArticleCount(count(article.getBoardId()))
+			.build();
+
+		outboxEventPublisher.publish(
+			EventType.ARTICLE_DELETED,
+			articleDeletedEventPayload,
+			article.getBoardId()
+		);
 	}
 
 	public ArticlePageResponse readAll(Long boardId, Long page, Long pageSize) {

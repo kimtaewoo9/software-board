@@ -3,6 +3,10 @@ package my.board.like.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import my.board.common.event.EventType;
+import my.board.common.event.payload.ArticleLikedEventPayload;
+import my.board.common.event.payload.ArticleUnlikedEventPayload;
+import my.board.common.outboxmessagerelay.OutboxEventPublisher;
 import my.board.common.snowflake.Snowflake;
 import my.board.like.entity.ArticleLike;
 import my.board.like.entity.ArticleLikeCount;
@@ -20,6 +24,7 @@ public class ArticleLikeService {
 	private final Snowflake snowflake = new Snowflake();
 	private final ArticleLikeRepository articleLikeRepository;
 	private final ArticleLikeCountRepository articleLikeCountRepository;
+	private final OutboxEventPublisher outboxEventPublisher;
 
 	@Transactional(readOnly = true)
 	public ArticleLikeResponse read(Long articleId, Long userId) {
@@ -70,6 +75,21 @@ public class ArticleLikeService {
 			);
 		}
 
+		ArticleLikedEventPayload articleLikedEventPayload
+			= ArticleLikedEventPayload.builder()
+			.articleLikeId(savedArticleLike.getArticleLikeId())
+			.articleId(savedArticleLike.getArticleId())
+			.userId(savedArticleLike.getUserId())
+			.createdAt(savedArticleLike.getCreatedAt())
+			.articleLikeCount(count(savedArticleLike.getArticleId()))
+			.build();
+
+		outboxEventPublisher.publish(
+			EventType.ARTICLE_LIKED,
+			articleLikedEventPayload,
+			savedArticleLike.getArticleId()
+		);
+
 		return ArticleLikeResponse.from(savedArticleLike);
 	}
 
@@ -79,7 +99,21 @@ public class ArticleLikeService {
 			.ifPresent(articleLike -> {
 				articleLikeRepository.delete(articleLike);
 				articleLikeCountRepository.decrease(articleId);
-				// TODO articleLikeCount의 likeCount가 0이면 articleLikeCount 삭제 .
+
+				ArticleUnlikedEventPayload articleUnlikedEventPayload =
+					ArticleUnlikedEventPayload.builder()
+						.articleLikeId(articleLike.getArticleLikeId())
+						.articleId(articleLike.getArticleId())
+						.userId(articleLike.getUserId())
+						.createdAt(articleLike.getCreatedAt())
+						.articleLikeCount(count(articleLike.getArticleId()))
+						.build();
+
+				outboxEventPublisher.publish(
+					EventType.ARTICLE_UNLIKED,
+					articleUnlikedEventPayload,
+					articleLike.getArticleId()
+				);
 			});
 	}
 

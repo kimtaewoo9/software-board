@@ -34,6 +34,7 @@ public class OutboxEventPublisher {
 
 		// 이건 messageRelay 라고 다른 데서 이걸 수신해서 처리할 거임 .
 		// OutboxEvent 를 리스닝 하는 다른 컴포넌트가 있을 것이고, outbox 정보를 받아 데이터 베이스 아웃박스 테이블에 저장할 것임.
+		// transactional event listener 에게 .. 이벤트를 전송함 .
 		applicationEventPublisher.publishEvent(OutboxEvent.of(outbox));
 	}
 }

@@ -11,7 +11,7 @@ import my.board.common.event.EventPayload;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleUpdateEventPayload implements EventPayload {
+public class ArticleCreatedEventPayload implements EventPayload {
 
 	private Long articleId;
 	private String title;
@@ -20,4 +20,5 @@ public class ArticleUpdateEventPayload implements EventPayload {
 	private Long writerId;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private Long boardArticleCount; // 게시판의 게시글 총 개수 .
 }
