@@ -64,7 +64,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 				"limit :limit",
 		nativeQuery = true
 	)
-	List<Comment> findAllInfiniteScroll(
+	List<Comment> findAllInfiniteScrollFirstPage(
 		@Param("articleId") Long articleId,
 		@Param("limit") Long limit
 	);
@@ -83,7 +83,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 				"limit :limit",
 		nativeQuery = true
 	)
-	List<Comment> findAllInfiniteScroll(
+	List<Comment> findAllInfiniteScrollNextPage(
 		@Param("articleId") Long articleId,
 		@Param("lastParentCommentId") Long lastParentCommentId,
 		@Param("lastCommentId") Long lastCommentId,

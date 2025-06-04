@@ -108,8 +108,8 @@ public class CommentService {
 		Long lastCommentId, Long limit) {
 
 		List<Comment> comments = lastParentCommentId == null || lastCommentId == null ?
-			commentRepository.findAllInfiniteScroll(articleId, limit) :
-			commentRepository.findAllInfiniteScroll(articleId, lastParentCommentId
+			commentRepository.findAllInfiniteScrollFirstPage(articleId, limit) :
+			commentRepository.findAllInfiniteScrollNextPage(articleId, lastParentCommentId
 				, lastCommentId, limit);
 
 		return comments.stream()
