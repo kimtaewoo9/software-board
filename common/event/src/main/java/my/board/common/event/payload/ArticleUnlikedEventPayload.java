@@ -11,14 +11,11 @@ import my.board.common.event.EventPayload;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentCreateEventPayload implements EventPayload {
+public class ArticleUnlikedEventPayload implements EventPayload {
 
-	private Long commentId;
-	private String content;
-	private String parentCommentId; // v1 버전 사용
+	private Long articleLikeId;
 	private Long articleId;
-	private Long writerId;
-	private Boolean deleted;
+	private Long userId;
 	private LocalDateTime createdAt;
-	private Long articleCommentCount;
+	private Long articleLikeCount;
 }

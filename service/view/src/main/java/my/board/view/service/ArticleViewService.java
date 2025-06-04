@@ -1,7 +1,6 @@
 package my.board.view.service;
 
 import lombok.RequiredArgsConstructor;
-import my.board.view.repository.ArticleViewCountBackUpRepository;
 import my.board.view.repository.ArticleViewCountRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 public class ArticleViewService {
 
 	private final ArticleViewCountRepository articleViewCountRepository;
-	private final ArticleViewCountBackUpRepository articleViewCountBackUpRepository;
 	private final ArticleViewCountBackUpProcessor articleViewCountBackUpProcessor;
 
 	private static final int BACKUP_BATCH_SIZE = 100;

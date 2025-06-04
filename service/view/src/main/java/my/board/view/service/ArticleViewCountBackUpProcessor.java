@@ -1,6 +1,9 @@
 package my.board.view.service;
 
 import lombok.RequiredArgsConstructor;
+import my.board.common.event.EventType;
+import my.board.common.event.payload.ArticleViewedEventPayload;
+import my.board.common.outboxmessagerelay.OutboxEventPublisher;
 import my.board.view.entity.ArticleViewCount;
 import my.board.view.repository.ArticleViewCountBackUpRepository;
 import org.springframework.stereotype.Component;
@@ -11,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ArticleViewCountBackUpProcessor {
 
 	private final ArticleViewCountBackUpRepository articleViewCountBackUpRepository;
+	private final OutboxEventPublisher outboxEventPublisher;
 
 	@Transactional
 	public void backUp(Long articleId, Long viewCount) {
@@ -24,5 +28,17 @@ public class ArticleViewCountBackUpProcessor {
 						ArticleViewCount.init(articleId, viewCount))
 				);
 		}
+
+		ArticleViewedEventPayload articleViewedEventPayload =
+			ArticleViewedEventPayload.builder()
+				.articleId(articleId)
+				.articleViewCount(viewCount)
+				.build();
+
+		outboxEventPublisher.publish(
+			EventType.ARTICLE_VIEWED,
+			articleViewedEventPayload,
+			articleId
+		);
 	}
 }

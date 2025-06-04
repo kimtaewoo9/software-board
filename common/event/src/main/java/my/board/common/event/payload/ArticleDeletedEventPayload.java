@@ -7,18 +7,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import my.board.common.event.EventPayload;
 
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDeleteEventPayload implements EventPayload {
+public class ArticleDeletedEventPayload implements EventPayload {
 
-	private Long commentId;
-	private String content;
-	private String parentCommentId; // v1 버전 ..
 	private Long articleId;
+	private String title;
+	private String content;
+	private Long boardId;
 	private Long writerId;
-	private Boolean deleted;
 	private LocalDateTime createdAt;
-	private Long articleCommentCount;
+	private LocalDateTime updatedAt;
+	private Long boardArticleCount;
 }
