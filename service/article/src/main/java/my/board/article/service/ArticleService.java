@@ -97,8 +97,8 @@ public class ArticleService {
 	public List<ArticleResponse> readAllInfiniteScroll(Long boardId, Long pageSize,
 		Long lastArticleId) {
 		List<Article> articles = lastArticleId == null ?
-			articleRepository.findAllInfiniteScroll(boardId, pageSize) :
-			articleRepository.findAllInfiniteScroll(boardId, pageSize, lastArticleId);
+			articleRepository.findAllInfiniteScrollFirstPage(boardId, pageSize) :
+			articleRepository.findAllInfiniteScrollNextPage(boardId, pageSize, lastArticleId);
 
 		return articles.stream()
 			.map(ArticleResponse::from)

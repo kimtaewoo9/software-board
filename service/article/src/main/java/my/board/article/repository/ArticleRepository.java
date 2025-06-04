@@ -50,7 +50,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 				"order by article_id desc limit :limit",
 		nativeQuery = true
 	)
-	List<Article> findAllInfiniteScroll(
+	List<Article> findAllInfiniteScrollFirstPage(
 		@Param("boardId") Long boardId,
 		@Param("limit") Long limit);
 
@@ -64,7 +64,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 				"order by article_id desc limit :limit",
 		nativeQuery = true
 	)
-	List<Article> findAllInfiniteScroll(
+	List<Article> findAllInfiniteScrollNextPage(
 		@Param("boardId") Long boardId,
 		@Param("limit") Long limit,
 		@Param("lastArticleId") Long lastArticleId
