@@ -3,10 +3,12 @@ package my.board.hotarticle.service;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import my.board.common.event.Event;
 import my.board.common.event.EventPayload;
 import my.board.common.event.EventType;
 import my.board.hotarticle.client.ArticleClient;
+import my.board.hotarticle.client.ArticleClient.ArticleResponse;
 import my.board.hotarticle.repository.HotArticleListRepository;
 import my.board.hotarticle.service.eventhandler.EventHandler;
 import my.board.hotarticle.service.response.HotArticleResponse;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class HotArticleService {
 
 	private final ArticleClient articleClient;
@@ -47,7 +50,15 @@ public class HotArticleService {
 	}
 
 	public List<HotArticleResponse> readAll(String dateStr) {
-		// articleClient.read 에 articleId 를 전달해서 원본 데이터를 받아옴.
+		List<ArticleResponse> articleResponses = hotArticleListRepository.readAll(dateStr)
+			.stream()
+			.map(articleClient::read)
+			.toList();
+
+		for (ArticleResponse articleResponse : articleResponses) {
+			System.out.println("✅ " + articleResponse);
+		}
+
 		return hotArticleListRepository.readAll(dateStr).stream()
 			.map(articleClient::read)
 			.filter(Objects::nonNull)
