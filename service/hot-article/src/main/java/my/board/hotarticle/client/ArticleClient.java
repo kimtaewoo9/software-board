@@ -16,7 +16,7 @@ public class ArticleClient {
 
 	private RestClient restClient;
 
-	@Value("${endpoints.software-board-article-service.url")
+	@Value("${endpoints.software-board-article-service.url}")
 	private String articleServiceUrl;
 
 	@PostConstruct
@@ -31,7 +31,7 @@ public class ArticleClient {
 				.retrieve()
 				.body(ArticleResponse.class);
 		} catch (Exception e) {
-			log.error("ArticleClient.read articleId ={}", articleId, e);
+			log.error("[ArticleClient.read] articleId ={}", articleId, e);
 		}
 
 		return null;

@@ -3,6 +3,7 @@ package my.board.article.service;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import my.board.article.entity.Article;
 import my.board.article.entity.BoardArticleCount;
 import my.board.article.repository.ArticleRepository;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ArticleService {
 
 	private final Snowflake snowflake = new Snowflake();
