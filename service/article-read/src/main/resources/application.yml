@@ -1,1 +1,27 @@
 server.port: 9005
+
+spring:
+  application:
+    name: software-board-article-read-service
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: software-board-article-read-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      enable-auto-commit: false
+
+endpoints:
+  software-board-article-service:
+    url: http://localhost:9000
+  software-board-comment-service:
+    url: http://localhost:9001
+  software-board-like-service:
+    url: http://localhost:9002
+  software-board-view-service:
+    url: http://localhost:9003
