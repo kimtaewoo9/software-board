@@ -94,12 +94,11 @@ public class ArticleService {
 				.updatedAt(article.getUpdatedAt())
 				.build();
 
-		// @TransactionalEventListener 애노테이션이 있는 메서드들에게 이벤트를 전송
-		// 이벤트 발생을 알린다 .
+		// 이벤트 데이터 생성 및 아웃 박스 테이블에 저장 .
 		outboxEventPublisher.publish(
 			EventType.ARTICLE_UPDATED,
 			articleUpdatedEventPayload,
-			article.getBoardId() // 단일 트랜잭션에서 .. 동일한 샤드로 처리 되어야하므로 .. 샤드키 전달
+			article.getBoardId() // 단일 트랜잭션에서 동일한 샤드로 처리 되어야하므로 샤드키 전달
 		);
 
 		return ArticleResponse.from(article);
