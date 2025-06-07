@@ -21,13 +21,14 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @ComponentScan("my.board.common.outboxmessagerelay")
 @EnableScheduling
 public class MessageRelayConfig {
-	// kafka template 를 이용해서 kafka 로 메시지를 보내야함 .
+	// 여기가 실질적으로 카프카에 메시지를 발행하는 부분임 .
 
 	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServers;
 
 	@Bean
 	public KafkaTemplate<String, String> messageRelayKafkaTemplate() {
+		// 이 Bean이 카프카와 통신하여 메시지를 보냄 .. (producer 역할)
 		Map<String, Object> configProps = new HashMap<>();
 		configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
 		configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
