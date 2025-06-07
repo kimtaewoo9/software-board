@@ -18,6 +18,7 @@ public class ArticleCreatedEventHandler implements EventHandler<ArticleCreatedEv
 	@Override
 	public void handle(Event<ArticleCreatedEventPayload> event) {
 		ArticleCreatedEventPayload payload = event.getPayload();
+		// 해당 event 를 받아서 .. ArticleQueryModel 객체로 변환 후 Redis에 저장 .
 		articleQueryModelRepository.create(
 			ArticleQueryModel.create(payload),
 			Duration.ofDays(1)

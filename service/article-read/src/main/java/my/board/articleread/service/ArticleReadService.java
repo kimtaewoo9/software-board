@@ -44,10 +44,11 @@ public class ArticleReadService {
 	}
 
 	public ArticleReadResponse read(Long articleId) {
-		// 일단 articleQueryModelRepository 에서 가져오고 .. 없으면 fetch 해옴 .
 		ArticleQueryModel articleQueryModel = articleQueryModelRepository.read(articleId)
 			.or(() -> fetch(articleId))
-			.orElseThrow();
+			.orElseThrow(
+				() -> new IllegalArgumentException("게시글을 찾을 수 없습니다. articleId: " + articleId)
+			);
 
 		return ArticleReadResponse.from(
 			articleQueryModel,
@@ -55,7 +56,6 @@ public class ArticleReadService {
 		);
 	}
 
-	// 없으면 articleClient 로 데이터 가져와서 articleQueryModel 로 만들어서 저장해야함 .
 	public Optional<ArticleQueryModel> fetch(Long articleId) {
 		Optional<ArticleQueryModel> articleQueryModelOptional = articleClient.read(articleId)
 			.map(article -> ArticleQueryModel.create(

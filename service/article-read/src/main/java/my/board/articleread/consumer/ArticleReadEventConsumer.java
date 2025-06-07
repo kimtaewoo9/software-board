@@ -24,7 +24,7 @@ public class ArticleReadEventConsumer {
 		Topic.SOFTWARE_BOARD_VIEW
 	})
 	public void listen(String message, Acknowledgment ack) {
-		log.info("[ArticleReadEventConsumer.listen] messagae = {}", message);
+		log.info("[ArticleReadEventConsumer.listen] message = {}", message);
 		Event<EventPayload> event = Event.fromJson(message);
 		if (event != null) {
 			// 카프카로 부터 수신산 이벤트를 articleReadService 에 전달함.
