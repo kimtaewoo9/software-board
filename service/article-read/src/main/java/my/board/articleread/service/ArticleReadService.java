@@ -44,13 +44,14 @@ public class ArticleReadService {
 	}
 
 	public ArticleReadResponse read(Long articleId) {
+		// 일단 articleQueryModelRepository 에서 가져오고 .. 없으면 fetch 해옴 .
 		ArticleQueryModel articleQueryModel = articleQueryModelRepository.read(articleId)
 			.or(() -> fetch(articleId))
 			.orElseThrow();
 
 		return ArticleReadResponse.from(
 			articleQueryModel,
-			viewClient.count(articleId)
+			viewClient.count(articleId) // 실시간으로 viewClient를 통해 조회수를 가져옴 .
 		);
 	}
 

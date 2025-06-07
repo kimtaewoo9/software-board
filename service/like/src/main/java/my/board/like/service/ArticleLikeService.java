@@ -67,6 +67,7 @@ public class ArticleLikeService {
 		);
 		ArticleLike savedArticleLike = articleLikeRepository.save(newArticleLike);
 
+		// increase 가 비관적 으로 구현되어 있음.
 		int articleLikeCount = articleLikeCountRepository.increase(articleId);
 		if (articleLikeCount == 0) {
 			articleLikeCountRepository.save(

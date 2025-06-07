@@ -22,18 +22,16 @@ public class MessageRelay {
 	private final MessageRelayCoordinator messageRelayCoordinator;
 	private final KafkaTemplate<String, String> messageRelayKafkaTemplate;
 
+	// 주 비지니스 트랝개션이 커밋되기 직전에 실행됨 .
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-	// publisher 에게 받은 이벤트를 .. outbox 로 만든다 .
-	// 이벤트 발생 알림을 받아서 outbox 를 만든다 .
 	public void createOutbox(OutboxEvent outboxEvent) {
 		log.info("✅ [MessageRelay.createOutbox] outboxEvent={}", outboxEvent);
 		outboxRepository.save(outboxEvent.getOutbox());
 	}
 
+	// 트랜잭션이 성공적으로 실행 됐다면, 별도의 스레드에서 비동기적으로 publishEvent를 실행함 .
 	@Async("messageRelayPublishEventExecutor")
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-	// event 발생 알림을 받아서 .event 를 kafka 에게 전송한다.
-	// outbox 에서 10초 마다 가져오기도 하지만 .. 직접 전송을 함.
 	public void publishEvent(OutboxEvent outboxEvent) {
 		publishEvent(outboxEvent.getOutbox());
 	}
@@ -47,7 +45,7 @@ public class MessageRelay {
 				outbox.getPayload()
 			).get(1, TimeUnit.SECONDS);
 
-			// 2. 전송 성공시 Outbox 에서 해당 이벤트 삭제 ..
+			// 2. 전송 성공시 Outbox 에서 해당 이벤트 삭제 .. 전송 실패시 삭제x
 			outboxRepository.delete(outbox);
 		} catch (Exception e) {
 			log.error("[MessageRelay.publishEvent] outbox={}", outbox, e);
