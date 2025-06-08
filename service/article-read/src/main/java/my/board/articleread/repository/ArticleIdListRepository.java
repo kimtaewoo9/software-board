@@ -11,14 +11,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class ArticleReadListRepository {
+public class ArticleIdListRepository {
 
 	private final StringRedisTemplate redisTemplate;
 
 	// article-read::board::{boardId}::article-list
 	private static final String KEY_FORMAT = "article-read::board::%s::article-list";
 
-	private void add(Long boardId, Long articleId, Long limit) {
+	public void add(Long boardId, Long articleId, Long limit) {
 		redisTemplate.executePipelined((RedisCallback<?>) action -> {
 			StringRedisConnection connection = (StringRedisConnection) action;
 			String key = generateKey(boardId);
@@ -38,13 +38,16 @@ public class ArticleReadListRepository {
 			.stream().map(Long::valueOf).toList();
 	}
 
+	// reverseRangeByLex .. -> 역순 + 사전순으로 범위를 지정함 .
+	// unbounded() -> 범위 제한 없음 .
+	// leftUnbounded -> 지정한 커서 값보다 .. 사전순으로 작은 모든 멤버들 . 근데 lastArticleId는 빼고 (exclusive)
 	public List<Long> readAllInfiniteScroll(Long boardId, Long lastArticleId, Long limit) {
 		return redisTemplate.opsForZSet().reverseRangeByLex(
 			generateKey(boardId),
 			lastArticleId == null ?
 				Range.unbounded() :
 				Range.leftUnbounded(Range.Bound.exclusive(toPaddedString(lastArticleId))),
-			Limit.limit().count(limit.intValue())
+			Limit.limit().count(limit.intValue()) // limit 개수만큼 가져와라 ..
 		).stream().map(Long::valueOf).toList();
 	}
 
