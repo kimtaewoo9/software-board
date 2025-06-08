@@ -8,6 +8,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import my.board.articleread.client.ArticleClient;
+import my.board.articleread.client.ArticleClient.ArticleResponse;
 import my.board.articleread.client.CommentClient;
 import my.board.articleread.client.LikeClient;
 import my.board.articleread.client.ViewClient;
@@ -116,6 +117,7 @@ public class ArticleReadService {
 			log.info("[ArticleReadService.readAllArticleIds] return redis data.");
 			return articleIds;
 		}
+		log.info("[ArticleReadService.readAllArticleIds] return origin data.");
 		return articleClient.readAll(boardId, page, pageSize).getArticles().stream()
 			.map(ArticleClient.ArticleResponse::getArticleId)
 			.toList();
@@ -140,7 +142,9 @@ public class ArticleReadService {
 		);
 	}
 
-	private List<Long> readAllInfiniteScrollArticleIds(Long boardId, Long lastArticleId,
+	private List<Long> readAllInfiniteScrollArticleIds(
+		Long boardId,
+		Long lastArticleId,
 		Long pageSize) {
 		List<Long> articleIds = articleIdListRepository
 			.readAllInfiniteScroll(boardId, lastArticleId, pageSize);
@@ -149,8 +153,9 @@ public class ArticleReadService {
 			return articleIds;
 		}
 		log.info("[ArticleReadService.readAllInfiniteScrollArticleIds] return origin data.");
-		return articleClient.readAllInfiniteScroll(boardId, lastArticleId, pageSize).stream()
-			.map(ArticleClient.ArticleResponse::getArticleId)
+		return articleClient.readAllInfiniteScroll(boardId, lastArticleId, pageSize)
+			.stream()
+			.map(ArticleResponse::getArticleId)
 			.toList();
 	}
 }
