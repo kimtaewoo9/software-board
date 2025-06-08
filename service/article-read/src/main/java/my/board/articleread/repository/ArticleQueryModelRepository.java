@@ -1,12 +1,11 @@
 package my.board.articleread.repository;
 
-import static java.util.function.Function.identity;
-
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import my.board.common.dataserializer.DataSerializer;
@@ -56,7 +55,7 @@ public class ArticleQueryModelRepository {
 		return redisTemplate.opsForValue().multiGet(keyList).stream()
 			.filter(Objects::nonNull)
 			.map(json -> DataSerializer.deserialize(json, ArticleQueryModel.class))
-			.collect(Collectors.toMap(ArticleQueryModel::getArticleId, identity()));
+			.collect(Collectors.toMap(ArticleQueryModel::getArticleId, Function.identity()));
 	}
 
 	private String generateKey(Long articleId) {
