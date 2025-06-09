@@ -23,7 +23,6 @@ public class ViewClient {
 		restClient = RestClient.create(viewServiceUrl);
 	}
 
-	// 일단 레디스에서 조회해보고 .. 없으면 restClient 에서 가져옴 .
 	@Cacheable(key = "#articleId", value = "articleViewCount") // 파라미터가 캐시의 키로 사용됨 .
 	public Long count(Long articleId) {
 		log.info("✅ [ViewClient.count] articleId = {}", articleId);

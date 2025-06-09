@@ -10,7 +10,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 @Configuration
-@EnableCaching // 캐시 추상화 기능 .. @Cacheable 이게 있어야 애노테이션이 동작함
+@EnableCaching
 public class CacheConfig {
 
 	@Bean
