@@ -9,23 +9,23 @@ import my.board.article.entity.Article;
 @Builder
 public class ArticleResponse {
 
-    private Long articleId;
-    private String title;
-    private String content;
-    private Long boardId;
-    private Long writerId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+	private Long articleId; // TODO 자바스크립트로의 응답은 String 타입으로 보내줘야함
+	private String title;
+	private String content;
+	private Long boardId;
+	private Long writerId;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
-    public static ArticleResponse from(Article article) {
-        return ArticleResponse.builder()
-            .articleId(article.getArticleId())
-            .title(article.getTitle())
-            .content(article.getContent())
-            .boardId(article.getBoardId())
-            .writerId(article.getWriterId())
-            .createdAt(article.getCreatedAt())
-            .updatedAt(article.getUpdatedAt())
-            .build();
-    }
+	public static ArticleResponse from(Article article) {
+		return ArticleResponse.builder()
+			.articleId(article.getArticleId())
+			.title(article.getTitle())
+			.content(article.getContent())
+			.boardId(article.getBoardId())
+			.writerId(article.getWriterId())
+			.createdAt(article.getCreatedAt())
+			.updatedAt(article.getUpdatedAt())
+			.build();
+	}
 }
