@@ -6,11 +6,3 @@
 
 ## Microservice Architecture
 <img width="589" alt="image" src="https://github.com/user-attachments/assets/ffd2b9a0-43b3-4a54-95d0-1f7673b780a7" />
-
-
-
-## TODO
-- 대댓글 알림
-- 게시물 좋아요 알림
-- 게시글 파일 업로드 기능
--
