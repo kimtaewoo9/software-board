@@ -1,0 +1,29 @@
+{
+  "analysis": {
+    "filter": {
+      "article_synonyms": {
+        "type": "synonym",
+        "synonyms": [
+          "게시글, 포스트, 글",
+          "댓글, 답글, 리플",
+          "공지, 공지사항, 알림",
+          "질문, 문의, Q&A"
+        ]
+      }
+    },
+    "analyzer": {
+      "articles_analyzer": {
+        "char_filter": [
+          "html_strip"
+        ],
+        "tokenizer": "nori_tokenizer",
+        "filter": [
+          "nori_part_of_speech",
+          "nori_readingform",
+          "lowercase",
+          "article_synonyms"
+        ]
+      }
+    }
+  }
+}

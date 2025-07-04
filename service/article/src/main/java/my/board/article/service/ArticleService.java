@@ -4,8 +4,10 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import my.board.article.document.ArticleDocument;
 import my.board.article.entity.Article;
 import my.board.article.entity.BoardArticleCount;
+import my.board.article.repository.ArticleDocumentRepository;
 import my.board.article.repository.ArticleRepository;
 import my.board.article.repository.BoardArticleCountRepository;
 import my.board.article.service.request.ArticleCreateRequest;
@@ -29,6 +31,8 @@ public class ArticleService {
 	private final Snowflake snowflake = new Snowflake();
 	private final ArticleRepository articleRepository;
 	private final BoardArticleCountRepository boardArticleCountRepository;
+	private final ArticleDocumentRepository articleDocumentRepository;
+
 	private final OutboxEventPublisher outboxEventPublisher;
 
 	@Transactional
@@ -49,6 +53,17 @@ public class ArticleService {
 				BoardArticleCount.init(boardId, 1L)
 			);
 		}
+
+		ArticleDocument articleDocument = ArticleDocument.create(
+			savedArticle.getArticleId(),
+			savedArticle.getTitle(),
+			savedArticle.getContent(),
+			savedArticle.getBoardId(),
+			savedArticle.getWriterId(),
+			savedArticle.getCreatedAt(),
+			savedArticle.getUpdatedAt()
+		);
+		articleDocumentRepository.save(articleDocument);
 
 		ArticleCreatedEventPayload articleCreateEventPayload =
 			ArticleCreatedEventPayload.builder()
@@ -82,6 +97,17 @@ public class ArticleService {
 		String title = articleUpdateRequest.getTitle();
 		String content = articleUpdateRequest.getContent();
 		article.update(title, content);
+
+		ArticleDocument articleDocument = ArticleDocument.create(
+			article.getArticleId(),
+			article.getTitle(),
+			article.getContent(),
+			article.getBoardId(),
+			article.getWriterId(),
+			article.getCreatedAt(),
+			article.getUpdatedAt()
+		);
+		articleDocumentRepository.save(articleDocument);
 
 		ArticleUpdatedEventPayload articleUpdatedEventPayload =
 			ArticleUpdatedEventPayload.builder()
@@ -118,6 +144,7 @@ public class ArticleService {
 			() -> new EntityNotFoundException("article not found")
 		);
 		articleRepository.delete(article);
+		articleDocumentRepository.deleteById(articleId);
 
 		// 좋아요는 .. 좋아요 객체를 삭제해야함 .
 		// 근데 조회수는 그냥 조회수 삭제해주면 됨 .
