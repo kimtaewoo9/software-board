@@ -20,3 +20,9 @@ spring:
       port: 6379
   kafka:
     bootstrap-servers: 127.0.0.1:9092
+  elasticsearch:
+    uris:
+      http://localhost:9200
+logging:
+  level:
+    org.elasticsearch.client: TRACE
