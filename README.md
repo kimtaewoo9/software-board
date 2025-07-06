@@ -1,11 +1,18 @@
-# MSA 기반 대규모 시스템 설계 - 게시판
+## 🛠️ skills
 
-## Skills
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/e3d12676-a149-4138-aeb7-e05f7ecb46f0" />
+🪄 Backend Core
 
+![☕ Java](https://img.shields.io/badge/☕%20Java-007396?style=flat-square&logo=java&logoColor=white)
+![🌱 Spring Boot](https://img.shields.io/badge/🌱%20Spring%20Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white)
+![🗄️ JPA](https://img.shields.io/badge/🗄️%20JPA-59666C?style=flat-square&logoColor=white)
 
-## Microservice Architecture
-<img width="589" alt="image" src="https://github.com/user-attachments/assets/ffd2b9a0-43b3-4a54-95d0-1f7673b780a7" />
+🗄️ Database & Cache
 
-## TODO
-- 게시글 검색 기능 (elastic search)
+![🚀 Redis](https://img.shields.io/badge/🚀%20Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![🦦 MariaDB](https://img.shields.io/badge/🦦%20MariaDB-003545?style=flat-square&logo=mariadb&logoColor=white)
+
+☁️ DevOps
+
+![☁️ AWS](https://img.shields.io/badge/☁️%20AWS-232F3E?style=flat-square&logo=amazonaws&logoColor=white)
+![🐳 Docker](https://img.shields.io/badge/🐳%20Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+![🦄 Apache Kafka](https://img.shields.io/badge/🦄%20Apache%20Kafka-231F20?style=flat-square&logo=apachekafka&logoColor=white)
