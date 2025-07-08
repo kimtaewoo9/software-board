@@ -1,4 +1,4 @@
-## 🛠️ skills
+## skills
 
 🚀 Backend
 
