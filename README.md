@@ -20,8 +20,3 @@
 ![☁️ AWS](https://img.shields.io/badge/%20AWS-232F3E?style=flat-square&logo=amazonaws&logoColor=white)
 ![🐳 Docker](https://img.shields.io/badge/%20Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![🦄 Apache Kafka](https://img.shields.io/badge/%20Apache%20Kafka-231F20?style=flat-square&logo=apachekafka&logoColor=white)
-
-## TODO
-- 알림 서비스
-- 유저 서비스
-- 
